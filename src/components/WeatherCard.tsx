@@ -1,4 +1,5 @@
   import { Card } from "./Card";
+  import type { WeatherData } from "../types";
 
 interface WeatherCardProps { 
   status: "idle" | "loading" | "success" | "error"; 
