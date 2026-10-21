@@ -1,12 +1,11 @@
 import { fetchJson } from "./fetchJson";
-import type { WeatherData } from "../types";
 
 // ЗАДАНИЕ 1: типизированная функция, возвращающая Promise<WeatherData>.
 //
 interface RawResponse {
   current_weather: {
     temperature: number;
-    windspeed: number;
+    windSpeed: number;
   };
 }
 
@@ -16,12 +15,12 @@ export async function getWeather(signal?: AbortSignal): Promise<WeatherData> {
 
   return {
       temperature: data.current_weather.temperature,
-      windspeed: data.current_weather.windspeed,
+      windSpeed: data.current_weather.windSpeed,
   };
 }
 // Open-Meteo (без ключа):
 //   https://api.open-meteo.com/v1/forecast?latitude=16.05&longitude=108.2&current_weather=true
-// Ответ содержит current_weather: { temperature, windspeed, ... }
+// Ответ содержит current_weather: { temperature, windSpeed, ... }
 //
 // TODO: опишите тип сырого ответа, вызовите fetchJson<RawResponse>,
 // преобразуйте результат в WeatherData через .then().

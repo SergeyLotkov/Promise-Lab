@@ -1,7 +1,6 @@
 // Типы ответов API. Задание 1: проверьте реальные ответы API и поправьте типы.
 
 export interface WeatherData {
-  city: string;
   temperature: number; // °C
   windSpeed: number; // км/ч
 }

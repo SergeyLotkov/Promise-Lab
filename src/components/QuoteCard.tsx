@@ -4,13 +4,13 @@ import type { QuoteData } from "../types";
 interface QuoteCardProps {
   status: "idle" | "loading" | "success" | "error";
   data: QuoteData | null;
-  error: string | null;
+  error: Error | null;
   onReload: () => void;
 }
 
 export function QuoteCard({ status, data, error, onReload }: QuoteCardProps) {
   return (
-    <Card title="Цитата" status={status} error={error} onRetry={onReload}>
+    <Card title="Цитата" status={status} error={error} onReload={onReload}>
       {data && (
         <blockquote style={{ margin: 0 }}>
           <p>«{data.quote}»</p>

@@ -35,7 +35,7 @@ export function useAsync<T>(fn: () => Promise<T>) {
           setState({ 
             status: "error", 
             data: null, 
-            error: errorMessage
+            error: err instanceof Error ? err : new Error(String(err))
           });
         }
       }   

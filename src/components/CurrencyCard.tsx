@@ -4,16 +4,16 @@ import type { CurrencyData } from "../types";
 interface CurrencyCardProps {
   status: "idle" | "loading" | "success" | "error";
   data: CurrencyData | null;
-  error: string | null;
+  error: Error | null;
   onReload: () => void;
 }
 
 export function CurrencyCard({ status, data, error, onReload }: CurrencyCardProps) {
   return (
-    <Card title="Курс валют" status={status} error={error} onRetry={onReload}>
+    <Card title="Курс валют" status={status} error={error} onReload={onReload}>
       {data && (
         <ul style={{ margin: 0, paddingLeft: 20 }}>
-          {["EUR", "VND", "RUB", "THB"].map((code) => (
+          {["EUR", "VND", "RUB"].map((code) => (
             <li key={code}>
               1 {data.base} = {data.rates[code] ?? "—"} {code}
             </li>

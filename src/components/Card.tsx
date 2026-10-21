@@ -5,12 +5,12 @@ interface CardProps {
   title: string;
   status: AsyncStatus;
   error: Error | null;
-  onRetry: () => void;
+  onReload: () => void;
   children: ReactNode;
 }
 
 // Общая оболочка карточки: показывает загрузку / ошибку / содержимое.
-export function Card({ title, status, error, onRetry, children }: CardProps) {
+export function Card({ title, status, error, onReload, children }: CardProps) {
   return (
     <section
       style={{
@@ -26,7 +26,7 @@ export function Card({ title, status, error, onRetry, children }: CardProps) {
       {status === "error" && (
         <div>
           <p style={{ color: "crimson" }}>Ошибка: {error?.message}</p>
-          <button onClick={onRetry}>Повторить</button>
+          <button onClick={onReload}>Повторить</button>
         </div>
       )}
       {status === "success" && children}
