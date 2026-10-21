@@ -2,7 +2,7 @@
 
 export interface WeatherData {
   temperature: number; // °C
-  windSpeed: number; // км/ч
+  windspeed: number; // км/ч
 }
 
 export interface CurrencyData {

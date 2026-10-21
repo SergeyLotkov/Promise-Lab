@@ -5,7 +5,7 @@ import { fetchJson } from "./fetchJson";
 interface RawResponse {
   current_weather: {
     temperature: number;
-    windSpeed: number;
+    windspeed: number;
   };
 }
 
@@ -15,12 +15,12 @@ export async function getWeather(signal?: AbortSignal): Promise<WeatherData> {
 
   return {
       temperature: data.current_weather.temperature,
-      windSpeed: data.current_weather.windSpeed,
+      windspeed: data.current_weather.windspeed,
   };
 }
 // Open-Meteo (без ключа):
 //   https://api.open-meteo.com/v1/forecast?latitude=16.05&longitude=108.2&current_weather=true
-// Ответ содержит current_weather: { temperature, windSpeed, ... }
+// Ответ содержит current_weather: { temperature, <windspeed> </windspeed>, ... }
 //
 // TODO: опишите тип сырого ответа, вызовите fetchJson<RawResponse>,
 // преобразуйте результат в WeatherData через .then().

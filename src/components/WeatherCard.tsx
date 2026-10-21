@@ -3,7 +3,7 @@
 
 interface WeatherCardProps { 
   status: "idle" | "loading" | "success" | "error"; 
-  data: { temperature: number; windSpeed: number} | null;
+  data: WeatherData | null;
   error: Error | null;
   onReload: () => void;
 }
@@ -13,7 +13,7 @@ export function WeatherCard({ status, data, error, onReload }: WeatherCardProps)
     <Card title="Погода" status={status} error={error} onReload={onReload}>
       {data && (
         <p> 
-            Temperature: {data.temperature}°C, Wind speed: {data.windSpeed} км/ч
+            Temperature: {data.temperature}°C, Wind speed: {data.windspeed} км/ч
         </p>
       )}    
     </Card>

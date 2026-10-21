@@ -1,52 +1,43 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { AsyncState } from "../types";
+import { useState, useEffect, useCallback, useRef } from "react";
+import type { AsyncStatus } from "../types";
 
-// ЗАДАНИЕ 3: useAsync<T>
-export function useAsync<T>(fn: () => Promise<T>) {
-  const [state, setState] = useState<AsyncState<T>>({
-    status: "idle",
-    data: null,
-    error: null,
-  });
+export function useAsync<T>(asyncFn: (signal?: AbortSignal) => Promise<T>) {
+  const [status, setStatus] = useState<AsyncStatus>("idle");
+  const [data, setData] = useState<T | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
 
-  const reload = useCallback(() => setTick((t) => t + 1), []);
+  const asyncFnRef = useRef(asyncFn);
+  asyncFnRef.current = asyncFn;
 
-  // Сохраняем свежую функцию в ref, чтобы не пересоздавать эффект
-  const fnRef = useRef(fn);
-  useEffect(() => {
-    fnRef.current = fn;
-  });
+  // Главная функция выполнения запроса
+  const execute = useCallback(async () => {
+    setStatus("loading");
+    setError(null);
+    const controller = new AbortController();
 
-  useEffect(() => {
-    let cancelled = false;
-    setState((prev) => ({ ...prev, status: "loading", error: null }));
-
-    async function run() {
-      try {
-        // Вызываем функцию из рефа!
-        const data = await fnRef.current();
-        if (!cancelled) {
-          setState({ status: "success", data, error: null });
-        }
-      } catch (err: unknown) {
-        if (!cancelled) {
-          const errorMessage = err instanceof Error ? err.message : String(err);
-          setState({ 
-            status: "error", 
-            data: null, 
-            error: err instanceof Error ? err : new Error(String(err))
-          });
-        }
-      }   
+    try {
+      const result = await asyncFnRef.current(controller.signal);
+      setData(result);
+      setStatus("success");
+      return result; // Возвращаем результат для Promise.allSettled
+    } catch (err: any) {
+      if (err.name !== "AbortError") {
+        setError(err.message || "Произошла ошибка");
+        setStatus("error");
+      }
+      throw err; // Пробрасываем ошибку, чтобы Promise.allSettled зафиксировал "rejected"
     }
+  }, []);
 
-    run();
+  // Автоматический запуск при монтировании или ручном reload()
+  useEffect(() => {
+    execute();
+  }, [tick, execute]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [tick]); // Зависимость только от tick!
+  const reload = useCallback(() => {
+    setTick((t) => t + 1);
+  }, []);
 
-  return { ...state, reload };
+  return { status, data, error, reload, execute };
 }

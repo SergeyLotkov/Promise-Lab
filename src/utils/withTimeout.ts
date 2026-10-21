@@ -1,11 +1,20 @@
-// ЗАДАНИЕ 5: withTimeout
-//
-// Если promise не завершился за ms миллисекунд — реджектим с Error("Timeout").
-// Идея: Promise.race([promise, таймерный промис, который реджектится]).
-//
-// Бонус: очищайте таймер (clearTimeout), когда promise завершился первым.
+    // src/utils/asyncHelpers.ts
 
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  // TODO
-  return promise;
-}
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`Operation timed out after ${ms}ms`));
+    }, ms);
+
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+  }
