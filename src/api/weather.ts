@@ -1,4 +1,5 @@
 import { fetchJson } from "./fetchJson";
+import type { WeatherData } from "../types";
 
 // ЗАДАНИЕ 1: типизированная функция, возвращающая Promise<WeatherData>.
 //

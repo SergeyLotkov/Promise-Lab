@@ -1,5 +1,6 @@
 // ЗАДАНИЕ 8: limitConcurrency
 //
+
 // Принимает массив "задач" (функций, возвращающих Promise) и лимит.
 // Запускает не более `limit` задач одновременно. Возвращает Promise
 // с результатами В ТОМ ЖЕ ПОРЯДКЕ, что и tasks.
@@ -10,11 +11,21 @@
 // Подсказка: заведите "воркеры" (limit штук), каждый берёт следующую задачу
 // по общему счётчику, пока задачи не кончатся. Результаты Promise.all(воркеры).
 
-export function limitConcurrency<T>(
+export async function limitConcurrency<T>(
   tasks: Array<() => Promise<T>>,
   limit: number
 ): Promise<T[]> {
-  // TODO
-  void limit;
-  return Promise.all(tasks.map((task) => task()));
+  const results: T[] = new Array(tasks.length);
+  let next = 0;
+  
+  async function worker(): Promise<void> {
+    while (next < tasks.length) {
+      const i = next++;
+      results[i] = await tasks[i]();
+    }
+  }
+  const workers = Array.from({ length: limit }, () => worker());
+
+  await Promise.all(workers);
+  return results;
 }

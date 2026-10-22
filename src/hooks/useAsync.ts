@@ -4,7 +4,7 @@ import type { AsyncStatus } from "../types";
 export function useAsync<T>(asyncFn: (signal?: AbortSignal) => Promise<T>) {
   const [status, setStatus] = useState<AsyncStatus>("idle");
   const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const [tick, setTick] = useState(0);
 
   const asyncFnRef = useRef(asyncFn);
